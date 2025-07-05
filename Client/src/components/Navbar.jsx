@@ -25,7 +25,7 @@ export const Navbar = () => {
             </button>
             <button
               onClick={() => openSignIn()}
-              className="bg-[#ffa62e] px-6 sm:px-9 py-2 text-white rounded-full cursor-pointer"
+              className="bg-[#FD8A33] px-6 sm:px-9 py-2 text-white rounded-full cursor-pointer"
             >
               Login
             </button>
