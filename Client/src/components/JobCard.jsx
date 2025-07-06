@@ -20,10 +20,10 @@ function JobCard({ job }) {
         dangerouslySetInnerHTML={{ __html: job.description.slice(0, 150) }}
       ></p>
       <div className="mt-4 gap-4 flex text-sm ">
-        <button className="bg-[#FD8A33] px-4 py-2 text-white rounded">
+        <button className="bg-[#FD8A33] px-4 py-2 text-white rounded cursor-pointer">
           Apply Now
         </button>
-        <button className="text-[#FD8A33] border border-[#FD8A33] px-4  py-2 rounded">
+        <button className="text-[#FD8A33] border border-[#FD8A33] px-4  py-2 rounded cursor-pointer">
           Learn More
         </button>
       </div>

@@ -20,12 +20,14 @@ export const AppContextProvider = (props) => {
 
   useEffect(() => {
     fetchJobs();
-  }, [jobs]);
+  }, []);
+
   const value = {
     searchFilter,
     setSearchFilter,
     isSearched,
     setIsSearched,
+    jobs,
   };
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>

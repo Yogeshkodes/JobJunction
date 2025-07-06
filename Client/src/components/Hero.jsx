@@ -15,6 +15,9 @@ export const Hero = () => {
     });
 
     setIsSearched(true);
+
+    titleRef.current.value = "";
+    locationRef.current.value = "";
   }
 
   return (
