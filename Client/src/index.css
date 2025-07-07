@@ -5,3 +5,139 @@
 * {
   font-family: outfit, sans-serif;
 }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.rich-text {
+  font-size: 15px;
+  color: #7a7b7d;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+.rich-text h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #252525;
+  margin: 0 0 32px; /* 4 × 8px below */
+}
+
+.rich-text h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #252525;
+  margin: 32px 0 16px; /* 4 × 8px top, 3 × 8px bottom */
+}
+
+.rich-text h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin: 24px 0 16px; /* 3 × 8px top, 2 × 8px bottom */
+}
+
+.rich-text h4 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444444;
+  margin: 20px 0 12px; /* 2.5 × 8px top, 1.5 × 8px bottom */
+}
+
+.rich-text h5 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555555;
+  margin: 16px 0 12px; /* 2 × 8px top, 1.5 × 8px bottom */
+}
+
+.rich-text h6 {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+  margin: 12px 0 8px; /* 1.5 × 8px top, 1 × 8px bottom */
+}
+
+.rich-text ol {
+  margin-left: 30px;
+  list-style-type: decimal;
+}
+
+.rich-text ul {
+  margin-left: 30px;
+  list-style-type: disc;
+}
+
+.rich-text li {
+  margin-bottom: 8px;
+}
+
+.rich-text p {
+  margin-bottom: 16px;
+}
+/* .rich-text {
+  font-size: 15px;
+  color: #7a7b7d;
+}
+
+.rich-text h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #252525;
+}
+
+.rich-text h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #252525;
+}
+
+.rich-text h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.rich-text h4 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444444;
+}
+
+.rich-text h5 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555555;
+}
+
+.rich-text h6 {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.rich-text strong {
+  font-weight: 700;
+}
+
+.rich-text ol {
+  margin-left: 30px;
+  list-style-type: decimal;
+}
+
+.rich-text ul {
+  margin-left: 30px;
+  list-style-type: disc;
+}
+
+.rich-text li {
+  margin-bottom: 8px;
+}
+
+.rich-text p {
+  margin-bottom: 16px;
+} */
