@@ -1,4 +1,5 @@
 import { Webhook } from "svix";
+import User from "../models/userSchema.model.js";
 
 export const clerkWebhooks = async (req, res) => {
   try {
@@ -31,7 +32,10 @@ export const clerkWebhooks = async (req, res) => {
 
         await User.create(userData);
 
-        res.json({});
+        res.json({
+          success: true,
+          message: "User created successfully",
+        });
         break;
       }
       case "user.updated": {
@@ -43,13 +47,19 @@ export const clerkWebhooks = async (req, res) => {
         };
 
         await User.findByIdAndUpdate(data.id, userData);
-        res.json({});
+        res.json({
+          success: true,
+          message: "User updated successfully",
+        });
         break;
       }
 
       case "user.deleted":
         await User.findByIdAndDelete(data.id);
-        res.json({});
+        res.json({
+          success: true,
+          message: "User deleted successfully",
+        });
         break;
 
       default:
@@ -60,6 +70,7 @@ export const clerkWebhooks = async (req, res) => {
     res.json({
       success: false,
       message: "Webhooks error",
+      error: error.message,
     });
   }
 };
