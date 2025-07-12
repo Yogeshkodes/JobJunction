@@ -11,7 +11,8 @@ const RecrutersLogin = () => {
   const [image, setImage] = useState("");
   const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false);
 
-  const { showRecruiterLogin, setShowRecruiterLogin } = useContext(AppContext);
+  const { showRecruiterLogin, setShowRecruiterLogin, backendUrl } =
+    useContext(AppContext);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";

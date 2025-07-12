@@ -5,8 +5,14 @@ import connectDB from "./config/db.js";
 import "./config/instrument.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from "./controllers/webhook.controller.js";
-import User from "./models/userSchema.model.js";
-import mongoose from "mongoose";
+
+import companyRouter from "./routes/company.Router.js";
+import jobRouter from "./routes/job.Router.js";
+
+import "./config/cloudinary.js";
+import upload from "./config/multer.js";
+import connectCloudinary from "./config/cloudinary.js";
+import { clerkMiddleware } from "@clerk/express";
 
 // initialize express app
 const app = express();
@@ -14,30 +20,24 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use(clerkMiddleware());
 
 // routes
 app.get("/", (req, res) => {
   res.send("Hello from server");
 });
 
-app.get("/seed-user", async (req, res) => {
-  try {
-    const u = await User.create({
-      _id: new mongoose.Types.ObjectId(),
-      name: "Test User",
-      email: "test@example.com",
-      resume: "fdsf",
-    });
-    return res.status(201).json(u);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
+app.use("/api/v1", upload.single("image"), companyRouter);
+app.use("/api/v1", jobRouter);
 
 app.post("/webhooks", clerkWebhooks);
+
 // connect DB
 
 await connectDB();
+
+// Cludinary connection
+await connectCloudinary();
 
 // The error handler must be registered before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
