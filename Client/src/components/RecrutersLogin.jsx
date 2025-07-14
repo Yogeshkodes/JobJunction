@@ -2,6 +2,9 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RecrutersLogin = () => {
   const [state, setState] = useState("Login");
@@ -11,8 +14,15 @@ const RecrutersLogin = () => {
   const [image, setImage] = useState("");
   const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false);
 
-  const { showRecruiterLogin, setShowRecruiterLogin, backendUrl } =
-    useContext(AppContext);
+  const navigate = useNavigate();
+
+  const {
+    showRecruiterLogin,
+    setShowRecruiterLogin,
+    backendUrl,
+    setCompanyToken,
+    setCompanyData,
+  } = useContext(AppContext);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -24,11 +34,49 @@ const RecrutersLogin = () => {
   async function onSubmithandler(e) {
     e.preventDefault();
     if (state === "Sign Up" && !isTextDataSubmitted) {
-      setIsTextDataSubmitted(true);
+      return setIsTextDataSubmitted(true);
+    }
+
+    try {
+      if (state === "Login") {
+        const { data } = await axios.post(`${backendUrl}/login`, {
+          email,
+          password,
+        });
+
+        if (data.success) {
+          setCompanyToken(data.token);
+          localStorage.setItem("token", data.token);
+          setCompanyData(data.company);
+          setShowRecruiterLogin(false);
+          navigate("/dashboard/add-job");
+        } else {
+          toast.error(data.message);
+        }
+      } else {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("image", image);
+
+        const { data } = await axios.post(`${backendUrl}/register`, formData);
+        if (data.success) {
+          setCompanyToken(data.token);
+          localStorage.setItem("token", data.token);
+          setCompanyData(data.company);
+          setShowRecruiterLogin(false);
+          navigate("/dashboard/add-job");
+        } else {
+          toast.error(data.message);
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  console.log(showRecruiterLogin);
+  // console.log(showRecruiterLogin);
   return (
     <div className="absolute top-0 left-0 bottom-0 right-0 z-2 backdrop-blur-md bg-black/30 flex items-center justify-center ">
       <form

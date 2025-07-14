@@ -1,9 +1,21 @@
 import React from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { AppContext } from "../context/AppContext";
+import { useContext } from "react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const { companyData, setCompanyData, setCompanyToken } =
+    useContext(AppContext);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setCompanyToken(null);
+    setCompanyData(null);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen">
@@ -12,26 +24,34 @@ const Dashboard = () => {
       <div className="px-4 shadow">
         <div className="flex items-center justify-between px-5">
           <img
-            onClick={(e) => navigate("/")}
+            onClick={(e) => navigate("/dashboard/add-job")}
             src={assets.logo}
             alt=""
             className="h-[100px] w-[180px] cursor-pointer max-sm:w-32"
           />
-          <div className="flex items-center gap-3">
-            <p className="max-sm:hidden">Welcome, Recruiter</p>
-            <div className="relative group">
-              <img
-                className="w-8  border border-gray-300 rounded-full"
-                src={assets.company_icon}
-                alt=""
-              />
-              <div className="absolute top-0 right-0 text-black   rounded pt-[67px] group-hover:block hidden  z-10  ">
-                <ul className="list-none m-0 p-2 bg-white rounded-md border border-gray-300 text-sm">
-                  <li className="py-1 px-2 pr-10 cursor-pointer">Logout</li>
-                </ul>
+
+          {companyData && (
+            <div className="flex items-center gap-3">
+              <p className="max-sm:hidden">Welcome, {companyData.name}</p>
+              <div className="relative group">
+                <img
+                  className="w-8 border border-gray-300 rounded-full bg-cover "
+                  src={companyData.image}
+                  alt=""
+                />
+                <div className="absolute top-0 right-0 text-black   rounded pt-[67px] group-hover:block hidden  z-10  ">
+                  <ul className="list-none m-0 p-2 bg-white rounded-md border border-gray-300 text-sm">
+                    <li
+                      className="py-1 px-2 pr-10 cursor-pointer"
+                      onClick={logout}
+                    >
+                      Logout
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

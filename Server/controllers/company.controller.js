@@ -3,14 +3,20 @@ import Company from "../models/company.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import generateToken from "../utils/generateToken.js";
 import Job from "../models/job.model.js";
+import JobApplication from "../models/jobApplication.js";
 export const registerCompany = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     const imageFile = req.file;
 
+    console.log("📨 Incoming body:", req.body);
+    console.log("🖼️ Incoming file:", req.file);
+
     if (!name || !email || !password || !imageFile) {
-      return res.status(400).json({ message: "Mising required fields" });
+      return res
+        .status(400)
+        .json({ message: "Mising required fields from here" });
     }
 
     const existingCompany = await Company.findOne({ email });
@@ -62,14 +68,14 @@ export const loginCompany = async (req, res) => {
 
     if (!company) {
       return res
-        .status(401)
+        .status(200)
         .json({ message: "Invalid email or password", success: false });
     }
 
     const isPasswordValid = await bcrypt.compare(password, company.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({
+      return res.status(201).json({
         success: false,
         message: "Invalid email or password",
       });
@@ -115,11 +121,11 @@ export const getCompany = async (req, res) => {
 export const postJob = async (req, res) => {
   const { title, description, location, salary, category, level } = req.body;
 
-  if (!title || !description || !location || !salary || !category || !level) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
   const companyId = req.company._id;
+
+  if (!title || !description || !location || !salary || !category || !level) {
+    return res.status(401).json({ message: "Missing required fields" });
+  }
 
   try {
     if (companyId) {
@@ -158,9 +164,19 @@ export const getCompanypostedJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ companyId });
 
+    //Adding no.  of applicants info in data
+
+    const jobData = await Promise.all(
+      jobs.map(async (job) => {
+        const applicants = await JobApplication.find({ jobId: job._id });
+
+        return { ...job.toObject(), applicants: applicants.length };
+      })
+    );
+
     res.status(200).json({
       success: true,
-      jobs,
+      jobData,
     });
   } catch (error) {
     res.status(500).json({ message: error.message, success: false });

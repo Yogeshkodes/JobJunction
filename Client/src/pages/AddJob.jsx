@@ -1,16 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import Quill from "quill";
 import { JobCategories, JobLocations } from "../assets/assets";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const AddJob = () => {
   const [title, setTitle] = useState("");
-  const [lacation, setLocation] = useState("Bangalore");
+  const [location, setLocation] = useState("Bangalore");
   const [category, setCategory] = useState("Programming");
   const [level, setLevel] = useState("Beginner Level");
   const [salary, setSalary] = useState(0);
 
   const editorRef = useRef(null);
   const quillref = useRef(null);
+
+  const { backendUrl, companyToken } = useContext(AppContext);
+
+  const onSubmithandler = async (e) => {
+    e.preventDefault();
+    try {
+      const description = quillref.current.getText();
+      const { data } = await axios.post(
+        `${backendUrl}/post-job`,
+        { title, description, location, category, level, salary },
+        { headers: { token: companyToken } }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        setTitle("");
+        quillref.current.root.innerHTML = "";
+        setSalary(0);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     // initialize Quill editor
@@ -23,7 +52,10 @@ const AddJob = () => {
   }, []);
 
   return (
-    <form className="container p-4 flex flex-col w-full items-start gap-3">
+    <form
+      className="container p-4 flex flex-col w-full items-start gap-3"
+      onSubmit={onSubmithandler}
+    >
       <div className="w-full">
         <p className="mb-2">Job Title</p>
         <input
@@ -91,7 +123,7 @@ const AddJob = () => {
           className="w-full border border-gray-300 rounded outline-0 text-gray-600 py-2 px-3 text-sm "
           type="number"
           name="Salary"
-          onChange={(e) => setSalary(e)}
+          onChange={(e) => setSalary(e.target.value)}
           placeholder="2500"
           min={0}
           max={100000}
