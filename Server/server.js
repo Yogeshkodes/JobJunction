@@ -8,9 +8,8 @@ import { clerkWebhooks } from "./controllers/webhook.controller.js";
 
 import companyRouter from "./routes/company.Router.js";
 import jobRouter from "./routes/job.Router.js";
+import userRouter from "./routes/user.Router.js";
 
-import "./config/cloudinary.js";
-import upload from "./config/multer.js";
 import connectCloudinary from "./config/cloudinary.js";
 import { clerkMiddleware } from "@clerk/express";
 
@@ -20,6 +19,8 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(clerkMiddleware());
 
 // routes
@@ -27,10 +28,11 @@ app.get("/", (req, res) => {
   res.send("Hello from server");
 });
 
-app.use("/api/v1", upload.single("image"), companyRouter);
+app.use("/api/v1", companyRouter);
 app.use("/api/v1", jobRouter);
+app.use("/api/v1", userRouter);
 
-app.post("/webhooks", clerkWebhooks);
+app.post("/webhooks", express.raw({ type: "application/json" }), clerkWebhooks);
 
 // connect DB
 

@@ -24,7 +24,7 @@ export const Navbar = () => {
         />
         {user ? (
           <div className="flex gap-5 items-center ">
-            <Link to={"applications"}>Applied Jobs</Link>
+            <Link to={"/applications"}>Applied Jobs</Link>
             <p>|</p>
             <p className="max-sm:hidden">
               Hi , {user.firstName + " " + user.lastName}

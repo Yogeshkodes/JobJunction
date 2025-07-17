@@ -6,17 +6,16 @@ export const clerkWebhooks = async (req, res) => {
     // create a svix instance with clerk webhook secret
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    // verifying the headers
-
-    await whook.verify(JSON.stringify(req.body), {
+    const payload = req.body.toString(); // raw body
+    const headers = {
       "svix-id": req.headers["svix-id"],
       "svix-timestamp": req.headers["svix-timestamp"],
       "svix-signature": req.headers["svix-signature"],
-    });
+    };
 
-    // getting data ready from body
+    const event = whook.verify(payload, headers); // verify raw body
 
-    const { data, type } = req.body;
+    const { data, type } = event;
 
     // switch case for different events
 

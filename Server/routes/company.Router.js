@@ -11,11 +11,12 @@ import {
   changeVisiblity,
 } from "../controllers/company.controller.js";
 import { protectCompany } from "../middlewares/protectCompany.middleware.js";
+import upload from "../config/multer.js";
 
 const router = express.Router();
 
 // Authentication routes
-router.post("/register", registerCompany);
+router.post("/register", upload.single("image"), registerCompany);
 router.post("/login", loginCompany);
 
 // Company profile routes
