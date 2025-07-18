@@ -9,7 +9,7 @@ import { Loader } from "../components/Loader";
 
 const ViewApplications = () => {
   const { backendUrl, companyToken } = useContext(AppContext);
-  const [applicants, setApplicants] = useState([]);
+  const [applicants, setApplicants] = useState(false);
 
   const fetchCompanyApplicants = async () => {
     try {
@@ -29,6 +29,32 @@ const ViewApplications = () => {
     }
   };
 
+  const changeJobApplicationStatus = async (id, status) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/change-status/`,
+        {
+          id,
+          status,
+        },
+        {
+          headers: { token: companyToken },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        fetchCompanyApplicants();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      if (error?.response?.data?.message)
+        return toast.error(error.response.data.message);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     if (companyToken) {
       fetchCompanyApplicants();
@@ -37,7 +63,9 @@ const ViewApplications = () => {
 
   return applicants ? (
     applicants.length === 0 ? (
-      <div></div>
+      <div className="flex items-center justify-center h-[70vh]">
+        <p className="text-xl sm:text-2xl">No Applications Availabel</p>
+      </div>
     ) : (
       <div className="container max-auto p-4">
         <div>
@@ -85,19 +113,33 @@ const ViewApplications = () => {
                       </a>
                     </td>
                     <td>
-                      <div className="relative flex  justify-center group  ">
-                        <button className="text-gray-500 action-button  ">
-                          ...
-                        </button>
-                        <div className="absolute  right-[-90px] md:left-8 top-[15px] md:-top-[-15px]  z-10 w-32 bg-white border border-gray-300 rounded shadow  group-hover:block hidden">
-                          <button className="py-2 px-4 text-blue-500 hover:bg-gray-100 w-full text-left block">
-                            Accept
+                      {data.status === "Pending" ? (
+                        <div className="relative flex  justify-center group  ">
+                          <button className="text-gray-500 action-button  ">
+                            ...
                           </button>
-                          <button className="py-2 px-4 text-red-500 hover:bg-gray-100 w-full text-left block">
-                            Reject
-                          </button>
+                          <div className="absolute  right-[-90px] md:left-8 top-[15px] md:-top-[-15px]  z-10 w-32 bg-white border border-gray-300 rounded shadow  group-hover:block hidden">
+                            <button
+                              onClick={() =>
+                                changeJobApplicationStatus(data._id, "Accepted")
+                              }
+                              className="py-2 px-4 text-blue-500 hover:bg-gray-100 w-full text-left block"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={() =>
+                                changeJobApplicationStatus(data._id, "Rejected")
+                              }
+                              className="py-2 px-4 text-red-500 hover:bg-gray-100 w-full text-left block"
+                            >
+                              Reject
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <span className="text-gray-500">{data.status}</span>
+                      )}
                     </td>
                   </tr>
                 ))}

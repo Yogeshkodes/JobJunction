@@ -199,7 +199,22 @@ export const getCompanypostedJobs = async (req, res) => {
   }
 };
 
-export const changeJobApplicantStatus = (req, res) => {};
+export const changeJobApplicantStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    const jobApplication = await JobApplication.findByIdAndUpdate(
+      {
+        _id: id,
+      },
+      { status }
+    );
+
+    res.json({ message: "Status changed", success: true, jobApplication });
+  } catch (error) {
+    res.json({ message: error.message, success: false });
+  }
+};
 
 export const changeVisiblity = async (req, res) => {
   const companyId = req.company._id;

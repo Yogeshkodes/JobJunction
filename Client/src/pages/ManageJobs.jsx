@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Loader } from "../components/Loader";
 
 const ManageJobs = () => {
   const navigate = useNavigate();
 
   const { backendUrl, companyToken } = useContext(AppContext);
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(false);
 
   async function chnageVisibilty(id) {
     setJobs((prev) =>
@@ -63,57 +64,65 @@ const ManageJobs = () => {
     }
   }
 
-  return (
-    <div className="container max-w-5xl p-4">
-      <div className="overflow-x-auto">
-        <table className="min-w-full  bg-white border border-gray-200 max-sm:text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 text-gray-600">
-              <th className="py-2 px-4 text-left max-sm:hidden">#</th>
-              <th className="py-2 px-4 text-left">Job Title</th>
-              <th className="py-2 px-4 text-left max-sm:hidden">Date</th>
-              <th className="py-2 px-4 text-left max-sm:hidden">Location</th>
-              <th className="py-2 px-4 text-center ">Applicants</th>
-              <th className="py-2 px-4 text-left">Visible</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.map((data, index) => (
-              <tr
-                key={index}
-                className="border-b border-gray-200 text-gray-700"
-              >
-                <td className="py-2 px-4 max-sm:hidden">{index + 1}</td>
-                <td className="py-2 px-4 ">{data.title}</td>
-                <td className="py-2 px-4 max-sm:hidden">
-                  {moment(data.date).format("ll")}
-                </td>
-                <td className="py-2 px-4 max-sm:hidden">{data.location}</td>
-                <td className="py-2 px-4 text-center">{data.applicants}</td>
-                <td className="text-center py-2">
-                  <input
-                    onChange={(e) => chnageVisibilty(data._id)}
-                    className="scale-125"
-                    type="checkbox"
-                    name="visible"
-                    checked={data.visible}
-                  />
-                </td>
+  return jobs ? (
+    jobs.length === 0 ? (
+      <div className="flex items-center justify-center h-[70vh]">
+        <p className="text-xl sm:text-2xl">No Jobs Availabel or Posted</p>
+      </div>
+    ) : (
+      <div className="container max-w-5xl p-4">
+        <div className="overflow-x-auto">
+          <table className="min-w-full  bg-white border border-gray-200 max-sm:text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 text-gray-600">
+                <th className="py-2 px-4 text-left max-sm:hidden">#</th>
+                <th className="py-2 px-4 text-left">Job Title</th>
+                <th className="py-2 px-4 text-left max-sm:hidden">Date</th>
+                <th className="py-2 px-4 text-left max-sm:hidden">Location</th>
+                <th className="py-2 px-4 text-center ">Applicants</th>
+                <th className="py-2 px-4 text-left">Visible</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {jobs.map((data, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-gray-200 text-gray-700"
+                >
+                  <td className="py-2 px-4 max-sm:hidden">{index + 1}</td>
+                  <td className="py-2 px-4 ">{data.title}</td>
+                  <td className="py-2 px-4 max-sm:hidden">
+                    {moment(data.date).format("ll")}
+                  </td>
+                  <td className="py-2 px-4 max-sm:hidden">{data.location}</td>
+                  <td className="py-2 px-4 text-center">{data.applicants}</td>
+                  <td className="text-center py-2">
+                    <input
+                      onChange={(e) => chnageVisibilty(data._id)}
+                      className="scale-125"
+                      type="checkbox"
+                      name="visible"
+                      checked={data.visible}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="flex justify-end">
-        <button
-          className="bg-[#FD8A33] text-white py-2 mt-4 px-4 rounded cursor-pointer"
-          onClick={(e) => navigate("/dashboard/add-job")}
-        >
-          Add New Job
-        </button>
+        <div className="flex justify-end">
+          <button
+            className="bg-[#FD8A33] text-white py-2 mt-4 px-4 rounded cursor-pointer"
+            onClick={(e) => navigate("/dashboard/add-job")}
+          >
+            Add New Job
+          </button>
+        </div>
       </div>
-    </div>
+    )
+  ) : (
+    <Loader />
   );
 };
 

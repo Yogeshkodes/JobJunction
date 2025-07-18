@@ -2,3 +2,5 @@ node_modules
 .env
 eslint.config.js
 
+# ignore env files
+Client/.env
